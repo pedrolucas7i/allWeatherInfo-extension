@@ -1,0 +1,9 @@
+{
+    "uuid": "zorinOSWeather-extension@zorin-custom",
+    "name": "zorinOSWeather",
+    "description": "Shows complete current weather information",
+    "version": 1,
+    "shell-version": ["44", "45"], 
+    "url": "https://github.com/pedrolucas7i/zorinOSWeather-extension"
+  }
+  
