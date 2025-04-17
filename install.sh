@@ -1,63 +1,72 @@
-#!/bin/sh
+#!/bin/bash
 echo "**********************************************"
 echo "*                                            *"
 echo "*  Installing zorinOSWeather-extension       *"
 echo "*                                            *"
 echo "**********************************************"
 
-# Função para instalar pacote com base no sistema
+# Function to install package based on the system
 install_package() {
     if command -v apt >/dev/null; then
         echo "[✓] Detected apt (Debian/Ubuntu/Zorin)"
         sudo apt update
-        sudo apt install -y gnome-shell-extension-prefs
+        sudo apt install -y gnome-shell-extension-prefs python3-pip
     elif command -v dnf >/dev/null; then
         echo "[✓] Detected dnf (Fedora)"
-        sudo dnf install -y gnome-extensions-app
+        sudo dnf install -y gnome-extensions-app python3-pip
     elif command -v pacman >/dev/null; then
         echo "[✓] Detected pacman (Arch/Manjaro)"
-        sudo pacman -Sy --noconfirm gnome-extensions
+        sudo pacman -Sy --noconfirm gnome-extensions python-pip
     elif command -v zypper >/dev/null; then
         echo "[✓] Detected zypper (openSUSE)"
-        sudo zypper install -y gnome-extensions
+        sudo zypper install -y gnome-extensions python3-pip
     else
-        echo "❌ Package manager not recognized. Please install 'gnome-shell-extension-prefs' manually."
+        echo "❌ Package manager not recognized. Please install 'gnome-shell-extension-prefs' and 'python3-pip' manually."
+        exit 1
     fi
 }
 
-# Instalar a ferramenta de extensões GNOME
-echo "[...] Installing GNOME Shell extension manager..."
+# Install GNOME Shell extension manager and Python3 pip
+echo "[...] Installing GNOME Shell extension manager and Python dependencies..."
 install_package
 
-# Define o diretório da extensão
+# Define the extension directory
 EXT_DIR="$HOME/.local/share/gnome-shell/extensions/zorinOSWeather-extension@zorin-custom"
 
-# Cria o diretório da extensão
+# Create the extension directory
 mkdir -p "$EXT_DIR"
 
-# Copia os ficheiros da extensão
+# Ensure the Python script has execute permission
+chmod +x ./src/app.py
+
+# Copy the extension files
 cp -r ./src/* "$EXT_DIR"
 
 echo "[✓] Files copied to $EXT_DIR"
 
-# Instala dependências Python
+# Install required Python modules
 echo "[✓] Installing required Python modules..."
-pip install --user requests
+pip3 install requests
 
-# Ativa a extensão (ignora erros silenciosamente se não der)
+# Create the weather data file and ensure permissions
+echo "[✓] Creating weather data file /tmp/zorin_weather_info.txt..."
+touch /tmp/zorin_weather_info.txt
+chmod 777 /tmp/zorin_weather_info.txt  # Allow all
+
+# Try to activate the extension silently (ignore errors)
 echo "[✓] Trying to activate the extension..."
 gnome-extensions enable zorinOSWeather-extension@zorin-custom 2>/dev/null
 
 echo "**********************************************"
-echo "*              Installation Done            *"
+echo "*              Installation Done             *"
 echo "**********************************************"
 
-# Detectar se é Wayland
+# Detect if Wayland session
 SESSION_TYPE=$(echo $XDG_SESSION_TYPE)
 
 if [ "$SESSION_TYPE" = "wayland" ]; then
     echo "⚠️  Detected Wayland session"
-    echo "🔁 Please logout and login again to apply the extension!"
+    echo "🔁 Please logout and log back in to apply the extension!"
 else
     echo "➡️  Restart GNOME Shell with: Alt+F2 → type 'r' → Enter"
 fi

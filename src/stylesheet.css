@@ -1,0 +1,30 @@
+.zorin-weather-box {
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  color: white;
+  font-family: "Cantarell", sans-serif;
+}
+
+.zorin-weather-main {
+  font-size: 20px;
+  font-weight: bold;
+  padding-bottom: 6px;
+}
+
+.zorin-weather-temp {
+  font-size: 18px;
+  padding-bottom: 4px;
+}
+
+.zorin-weather-condition {
+  font-size: 16px;
+  padding-bottom: 4px;
+}
+
+.zorin-weather-extra {
+  font-size: 14px;
+  padding-bottom: 2px;
+}
