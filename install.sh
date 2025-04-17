@@ -32,7 +32,7 @@ echo "[...] Installing GNOME Shell extension manager and Python dependencies..."
 install_package
 
 # Define the extension directory
-EXT_DIR="$HOME/.local/share/gnome-shell/extensions/allWeatherInfo-extension@zorin-custom"
+EXT_DIR="$HOME/.local/share/gnome-shell/extensions/allWeatherInfo-extension@pedrolucas7i"
 
 # Create the extension directory
 mkdir -p "$EXT_DIR"
@@ -49,14 +49,9 @@ echo "[✓] Files copied to $EXT_DIR"
 echo "[✓] Installing required Python modules..."
 pip3 install requests
 
-# Create the weather data file and ensure permissions
-echo "[✓] Creating weather data file /tmp/zorin_weather_info.txt..."
-touch /tmp/zorin_weather_info.txt
-chmod 777 /tmp/zorin_weather_info.txt  # Allow all
-
 # Try to activate the extension silently (ignore errors)
 echo "[✓] Trying to activate the extension..."
-gnome-extensions enable allWeatherInfo-extension@zorin-custom 2>/dev/null
+gnome-extensions enable allWeatherInfo-extension@pedrolucas7i 2>/dev/null
 
 echo "**********************************************"
 echo "*              Installation Done             *"
