@@ -27,9 +27,8 @@ function enable() {
         label.set_text(_getWeatherInfo());  // Refresh on click
     });
 
-    // Create a new St.Tooltip and associate it with the weatherIndicator
-    let tooltip = new St.Tooltip({ text: weatherText });
-    tooltip.set_related_widget(weatherIndicator);  // Attach the tooltip to the weatherIndicator
+    // Create and set up the tooltip
+    let tooltip = Main.createTooltip(weatherIndicator, weatherText);
 
     Main.panel._rightBox.insert_child_at_index(weatherIndicator, 0);
 }
