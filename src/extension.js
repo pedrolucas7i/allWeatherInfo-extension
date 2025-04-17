@@ -96,7 +96,7 @@ function enable() {
 
     Main.layoutManager._backgroundGroup.add_child(weatherContainer);
 
-    let x = monitor.x + monitor.width - weatherContainer.width - PADDING;
+    let x = monitor.x + (monitor.width - weatherContainer.width - PADDING);
     let y = monitor.y + PADDING;
 
     weatherContainer.set_position(
