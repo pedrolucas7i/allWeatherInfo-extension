@@ -5,7 +5,7 @@ const GLib = imports.gi.GLib;
 
 let PADDING = 40;
 let weatherContainer;
-let pythonScript = `${GLib.get_home_dir()}/.local/share/gnome-shell/extensions/zorinOSWeather-extension@zorin-custom/app.py`;
+let pythonScript = `${GLib.get_home_dir()}/.local/share/gnome-shell/extensions/allWeatherInfo-extension@zorin-custom/app.py`;
 
 function runPythonAndParse(callback) {
     try {
