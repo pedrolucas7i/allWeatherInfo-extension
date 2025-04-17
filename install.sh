@@ -2,6 +2,7 @@
 echo "**********************************************"
 echo "*                                            *"
 echo "*  Installing allWeatherInfo-extension       *"
+echo "*  by pedrolucas7i (Pedro Lucas)             *"
 echo "*                                            *"
 echo "**********************************************"
 
