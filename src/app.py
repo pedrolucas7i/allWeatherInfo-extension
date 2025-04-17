@@ -1,41 +1,38 @@
-import os
 import requests
-from datetime import datetime
-from dotenv import load_dotenv
 
-load_dotenv()
-API_KEY = os.getenv("API_WEATHER_KEY")
+try:
+    # Use ip-api for more accurate location
+    geo_data = requests.get("http://ip-api.com/json/").json()
+    city = geo_data.get("city", "Lisbon")
+    country = geo_data.get("country", "Portugal")
 
-# Get location based on IP
-geo_req = requests.get("https://ipinfo.io/json")
-geo_data = geo_req.json()
-city = geo_data.get("city", "Lisbon")
+    # Get weather data
+    response = requests.get(f"https://wttr.in/{city}?format=j1")
+    weather = response.json()
 
-# Fetch weather data
-url = f"https://api.openweathermap.org/data/2.5/weather?q={city},PT&appid={API_KEY}&units=metric&lang=en"
-res = requests.get(url)
+    current = weather["current_condition"][0]
+    area = weather["nearest_area"][0]["areaName"][0]["value"]
 
-if res.status_code != 200:
-    print(f"❌ Error fetching weather: {res.status_code}")
-else:
-    data = res.json()
-    city_name = data['name']
-    description = data['weather'][0]['description'].capitalize()
-    temp = data['main']['temp']
-    feels_like = data['main']['feels_like']
-    humidity = data['main']['humidity']
-    wind_speed = data['wind']['speed']
-    sunrise = datetime.utcfromtimestamp(data['sys']['sunrise']).strftime('%H:%M')
-    sunset = datetime.utcfromtimestamp(data['sys']['sunset']).strftime('%H:%M')
+    temp_c = current["temp_C"]
+    feels_like = current["FeelsLikeC"]
+    humidity = current["humidity"]
+    wind_speed = current["windspeedKmph"]
+    desc = current["weatherDesc"][0]["value"]
+
+    sunrise = weather["weather"][0]["astronomy"][0]["sunrise"]
+    sunset = weather["weather"][0]["astronomy"][0]["sunset"]
 
     weather_text = (
-        f"🌍 Weather in {city_name}, Portugal 🇵🇹\\n"
-        f"🌡️ Temp: {temp:.0f}°C (Feels like {feels_like:.0f}°C)\\n"
-        f"💧 Humidity: {humidity}%\\n"
-        f"💨 Wind Speed: {wind_speed} m/s\\n"
-        f"☀️ Sunrise: {sunrise} UTC\\n"
-        f"🌇 Sunset: {sunset} UTC\\n"
-        f"☁️ Condition: {description}"
+        f"🌍 Weather in {area}, {country}\n"
+        f"🌡️ Temp: {temp_c}°C (Feels like {feels_like}°C)\n"
+        f"💧 Humidity: {humidity}%\n"
+        f"💨 Wind Speed: {wind_speed} km/h\n"
+        f"☀️ Sunrise: {sunrise}\n"
+        f"🌇 Sunset: {sunset}\n"
+        f"☁️ Condition: {desc}"
     )
 
     print(weather_text)
+
+except Exception as e:
+    print("❌ Failed to get weather info:", e)
