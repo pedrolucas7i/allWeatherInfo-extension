@@ -3,7 +3,7 @@
     "name": "zorinOSWeather",
     "description": "Shows complete current weather information",
     "version": 1,
-    "shell-version": ["44", "45"], 
+    "shell-version": ["41", "42", "43", "44", "45"], 
     "url": "https://github.com/pedrolucas7i/zorinOSWeather-extension"
   }
   
