@@ -1,30 +1,56 @@
-#!/usr/bin/env python3
 import json
 import requests
+import sys
 
-try:
-    geo_data = requests.get("http://ip-api.com/json/").json()
-    city = geo_data.get("city", "Lisbon")
-    country = geo_data.get("country", "Portugal")
+def get_location_by_ip():
+    try:
+        geo = requests.get("http://ip-api.com/json/").json()
+        return geo.get("city", "Lisbon"), geo.get("country", "Portugal")
+    except Exception:
+        return "Lisbon", "Portugal"
 
-    response = requests.get(f"https://wttr.in/{city}?format=j1")
-    weather = response.json()
+def get_weather(city):
+    url = f"https://wttr.in/{city}?format=j1"
+    response = requests.get(url)
 
-    current = weather["current_condition"][0]
-    area = weather["nearest_area"][0]["areaName"][0]["value"]
+    if response.status_code != 200:
+        raise Exception(f"Failed to get weather data: status {response.status_code}")
+    
+    try:
+        return response.json()
+    except ValueError:
+        raise Exception("Invalid JSON response.")
 
-    data = {
+def parse_weather(data, city, country):
+    current = data["current_condition"][0]
+    area = data["nearest_area"][0]["areaName"][0]["value"]
+
+    return {
         "location": f"{area}, {country}",
         "temperature": f"{current['temp_C']}°C",
         "feels_like": f"{current['FeelsLikeC']}°C",
         "humidity": f"{current['humidity']}%",
         "wind_speed": f"{current['windspeedKmph']} km/h",
         "condition": current["weatherDesc"][0]["value"],
-        "sunrise": weather["weather"][0]["astronomy"][0]["sunrise"],
-        "sunset": weather["weather"][0]["astronomy"][0]["sunset"]
+        "sunrise": data["weather"][0]["astronomy"][0]["sunrise"],
+        "sunset": data["weather"][0]["astronomy"][0]["sunset"]
     }
 
-    print(json.dumps(data))  # Output JSON directly
+def main():
+    try:
+        # If a city is passed via CLI, use it. Otherwise, use IP-based location.
+        if len(sys.argv) > 1:
+            city = " ".join(sys.argv[1:])
+            country = ""
+        else:
+            city, country = get_location_by_ip()
 
-except Exception as e:
-    print(json.dumps({ "error": f"Failed to get weather info: {str(e)}" }))
+        weather_data = get_weather(city)
+        result = parse_weather(weather_data, city, country)
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+
+    except Exception as e:
+        print(json.dumps({ "error": f"Failed to get weather info: {str(e)}" }))
+
+if __name__ == "__main__":
+    main()

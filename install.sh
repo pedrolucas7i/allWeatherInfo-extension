@@ -47,7 +47,8 @@ echo "[✓] Files copied to $EXT_DIR"
 
 # Install required Python modules
 echo "[✓] Installing required Python modules..."
-pip3 install requests
+pip3 install requests --break-system-packages
+
 
 # Try to activate the extension silently (ignore errors)
 echo "[✓] Trying to activate the extension..."
